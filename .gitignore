@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+myuncle_paper/
+_demo/
+*.docx

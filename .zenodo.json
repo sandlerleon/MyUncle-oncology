@@ -1,0 +1,16 @@
+{
+  "title": "MyUncle: a bistable order-repair engine for evolutionary cancer-therapy modelling",
+  "upload_type": "software",
+  "access_right": "open",
+  "license": "MIT",
+  "version": "1.1.0",
+  "creators": [
+    {"name": "Sandler, Leon",
+     "orcid": "0009-0007-4584-808X",
+     "affiliation": "Independent Researcher, Northbrook, Illinois, United States"}
+  ],
+  "keywords": ["mathematical oncology", "adaptive therapy", "atavism", "bistability",
+               "evolutionary dynamics", "phylostratigraphy", "cancer modelling"],
+  "description": "<p><strong>Overview.</strong> MyUncle couples an evolutionary sensitive/resistant tumour model to a bistable order-repair variable representing multicellular information integrity, formalising the atavism (cancer-first) hypothesis and comparing six therapy protocols across a virtual mouse cohort.</p><p><strong>Key features.</strong> tissue_atavism preset; six built-in protocols (MTD, immunotherapy, adaptive dosing, SIM-block, re-differentiation, and combinations); Latin-hypercube global sensitivity analysis; correlation-robust phylostratigraphy pipeline; one-call reproduce_paper().</p><p><strong>Repository contents.</strong> MyUncle.py (framework), tests/, paper.md/paper.bib, README, LICENSE.</p><p><strong>Companion manuscript.</strong> 'Cancer as a bistable order-repair transition' (submitted to Bulletin of Mathematical Biology).</p>",
+  "notes": "This work received no external funding."
+}
