@@ -1,6 +1,6 @@
 # MyUncle — bistable order–repair engine for evolutionary cancer-therapy modelling
 
-[![DOI](https://zenodo.org/badge/DOI/PLACEHOLDER.svg)](https://doi.org/PLACEHOLDER)  <!-- added on Zenodo publish -->
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21229801.svg)](https://doi.org/10.5281/zenodo.21229801)
 
 A single-file Python framework that couples an evolutionary (sensitive/resistant) tumour model to a **bistable order–repair variable** representing multicellular information integrity. It reproduces, in one dynamical system, the atavism theory's therapeutic corollary — *target the weakness, not the strength* — and compares six therapy protocols across a virtual mouse cohort.
 
