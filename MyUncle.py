@@ -347,9 +347,7 @@ def fig_cover(path, title, subtitle):
             fontweight="bold", va="top")
     ax.text(0.08, 0.685, textwrap.fill(subtitle, 60), fontsize=13, color="#8FB3E0",
             style="italic", va="top")
-    ax.text(0.08, 0.60, HOUSE["author"], fontsize=13, color="#EAF0FA", fontweight="bold")
-    ax.text(0.08, 0.575, f"pen name {HOUSE['penname']}", fontsize=10, color="#8FB3E0", style="italic")
-    ax.text(0.08, 0.55, HOUSE["affil"], fontsize=9.5, color="#B8C6DC", style="italic")
+    # (author / pen name / affiliation omitted from cover for double-blind submission)
     ax.text(0.08, 0.09, "MyUncle \u2022 tissue_atavism preset \u2022 order\u2013repair engine",
             fontsize=9, color="#5E7BA6")
     ax.text(0.08, 0.065, datetime.date.today().isoformat(), fontsize=9, color="#5E7BA6")
@@ -456,7 +454,7 @@ def fig_sensitivity(path, gs):
 def build_docx(path, title, subtitle, summary, gsens, cover_png, theory_png, race_png, sens_png, anon=False):
     from docx import Document
     from docx.shared import Pt, RGBColor, Inches
-    from docx.enum.text import WD_ALIGN_PARAGRAPH
+    from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_LINE_SPACING
     from docx.oxml.ns import qn
     from docx.oxml import OxmlElement
 
@@ -466,6 +464,8 @@ def build_docx(path, title, subtitle, summary, gsens, cover_png, theory_png, rac
     doc = Document()
     st = doc.styles["Normal"]; st.font.name = "Arial"; st.font.size = Pt(10.5)
     st.element.rPr.rFonts.set(qn("w:eastAsia"), "Arial")
+    st.paragraph_format.line_spacing_rule = WD_LINE_SPACING.SINGLE   # standard single spacing
+    st.paragraph_format.space_after = Pt(6)
     sec = doc.sections[0]
     sec.page_width, sec.page_height = Inches(8.5), Inches(11)
     for m in ("top_margin","bottom_margin","left_margin","right_margin"):
@@ -501,18 +501,14 @@ def build_docx(path, title, subtitle, summary, gsens, cover_png, theory_png, rac
     # ---- title block ----
     para(title, 18, NAVY, bold=True, align=C, after=2)
     para(subtitle, 12, BLUE, italic=True, align=C, after=6)
-    if anon:
-        para("Author identity and affiliation removed for double-blind peer review.",
-             10, italic=True, align=C, after=4)
-    else:
-        para(HOUSE["author"], 11, bold=True, align=C, after=1)
-        para(HOUSE["affil"], 10, italic=True, align=C, after=1)
-        para("ORCID: " + HOUSE["orcid"], 10, italic=True, align=C, after=4)
+    # Double-blind: author name / affiliation / ORCID are never rendered in the header.
+    para("Author identity and affiliation removed for double-blind peer review.",
+         10, italic=True, align=C, after=4)
     rule()
 
-    if not anon:
-        figure(cover_png, width=3.0)
-        caption("Bistable order\u2013repair motif.")
+    # Cover image is always included in the template.
+    figure(cover_png, width=3.0)
+    caption("Bistable order\u2013repair motif.")
 
     # ---- abstract (novelty foregrounded; framed as theoretical oncology) ----
     h2("Abstract")
@@ -727,8 +723,7 @@ def build_docx(path, title, subtitle, summary, gsens, cover_png, theory_png, rac
     body("Conflicts of interest: The author declares no competing interests.")
     body("Ethics: This study is entirely computational and involved no human participants "
          "or animal subjects.")
-    if not anon:
-        body("ORCID: " + HOUSE["author"] + ", " + HOUSE["orcid"] + ".")
+    # (author identity / ORCID intentionally omitted for double-blind submission)
 
     # ---- References ----
     h1("References")
@@ -740,6 +735,7 @@ def build_docx(path, title, subtitle, summary, gsens, cover_png, theory_png, rac
         "Gatenby RA, Silva AS, Gillies RJ, Frieden BR (2009) Adaptive therapy. Cancer Research 69(11):4894-4903. doi:10.1158/0008-5472.CAN-08-3658",
         "Lineweaver CH, Davies PCW, Vincent MD (2014) Targeting cancer's weaknesses (not its strengths): therapeutic strategies suggested by the atavistic model. BioEssays 36(9):827-835. doi:10.1002/bies.201400070",
         "Lineweaver CH, Bussey KJ, Blackburn AC, Davies PCW (2021) Cancer progression as a sequence of atavistic reversions. BioEssays 43(7):2000305. doi:10.1002/bies.202000305",
+        "Sandler, L. (2026). MyUncle: A Compact Maintenance-Lattice Framework for Order-Persistence Simulations Across Disciplines. Zenodo. https://doi.org/10.5281/zenodo.21223570",
         "Trigos AS, Pearson RB, Papenfuss AT, Goode DL (2017) Altered interactions between unicellular and multicellular genes drive hallmarks of transformation. PNAS 114(24):6406-6411. doi:10.1073/pnas.1617743114",
         "Zhang J, Cunningham JJ, Brown JS, Gatenby RA (2017) Integrating evolutionary dynamics into treatment of metastatic castrate-resistant prostate cancer. Nature Communications 8:1816. doi:10.1038/s41467-017-01816-6",
     ]
@@ -751,7 +747,7 @@ def build_docx(path, title, subtitle, summary, gsens, cover_png, theory_png, rac
 # ============================================================================ #
 #  6. reproduce_paper() + CLI                                                    #
 # ============================================================================ #
-def reproduce_paper(title="Cancer as a bistable order-repair transition",
+def reproduce_paper(title="Treating Cancer by Its Weaknesses, Not Its Strengths: A Bistable Order–Repair Model of Tumour Reversion and Therapy Response",
                     subtitle="In-silico comparison of evolutionary and atavism-targeting therapies",
                     preset="tissue_atavism", outdir="/mnt/user-data/outputs", full=False):
     os.makedirs(outdir, exist_ok=True)
@@ -785,6 +781,17 @@ def reproduce_paper(title="Cancer as a bistable order-repair transition",
         print(f"  {LABELS[p]:28s}{s['medSurv']:9.1f}{s['alive']:8.1f}{s['controlled']:7.1f}{s['dose']:7.0f}")
     print("\n[MyUncle] artifacts:")
     for f in (docx_path, anon_path, race_png, theory_png, sens_png, cover_png): print("   ", f)
+
+    print("\n[MyUncle] suggested submission venue (Springer Nature):")
+    print("   -> Bulletin of Mathematical Biology (Springer)")
+    print("      Chosen for an independent researcher without funding who must clear both")
+    print("      desk review and peer review:")
+    print("      * Scope: theoretical / computational oncology and dynamical-systems models")
+    print("        are core to the journal, and it welcomes hypothesis-generating theory -")
+    print("        which is exactly how this manuscript frames itself.")
+    print("      * Cost: hybrid journal, so the subscription publishing route carries NO")
+    print("        article-processing charge (no fee required to publish).")
+    print("      * Submit the blinded (ANON) build listed above.")
     return dict(summary=summary, gsens=gsens, docx=docx_path, anon=anon_path,
                 figures=[theory_png, race_png, sens_png, cover_png])
 
@@ -891,7 +898,7 @@ def main():
     ap = argparse.ArgumentParser(description="MyUncle order-repair engine")
     ap.add_argument("--reproduce", action="store_true")
     ap.add_argument("--preset", default="tissue_atavism")
-    ap.add_argument("--title", default="Cancer as a bistable order-repair transition")
+    ap.add_argument("--title", default="Treating Cancer by Its Weaknesses, Not Its Strengths: A Bistable Order–Repair Model of Tumour Reversion and Therapy Response")
     ap.add_argument("--subtitle", default="In-silico comparison of evolutionary and atavism-targeting therapies")
     ap.add_argument("--outdir", default="/mnt/user-data/outputs")
     ap.add_argument("--full", action="store_true", help="full n=500 cohort")
